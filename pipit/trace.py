@@ -901,3 +901,12 @@ class Trace:
             patterns.append(match_original)
 
         return patterns
+
+    def plot_comm_matrix(self, output="size", *args, **kwargs):
+        from .plotting import core
+
+        # Generate the data
+        data = self.comm_matrix(output=output)
+
+        # Return the Bokeh plot
+        return core.comm_matrix(data, output=output, *args, **kwargs)
