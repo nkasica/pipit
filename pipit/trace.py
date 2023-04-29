@@ -39,6 +39,10 @@ class Trace:
         # and stores the graph object in self.cct
         self.cct = create_cct(self.events)
 
+        from .plotting.util import generate_palette
+
+        self.palette = generate_palette(self)
+
     @staticmethod
     def from_otf2(dirname, num_processes=None, create_cct=False):
         """Read an OTF2 trace into a new Trace object."""
