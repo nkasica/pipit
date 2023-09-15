@@ -908,7 +908,7 @@ class Trace:
         return patterns
 
     def plot_comm_matrix(self, output="size", *args, **kwargs):
-        from .plotting import core
+        from .vis import core
 
         # Generate the data
         data = self.comm_matrix(output=output)
@@ -917,7 +917,7 @@ class Trace:
         return core.comm_matrix(data, output=output, *args, **kwargs)
 
     def plot_message_histogram(self, bins=20, *args, **kwargs):
-        from .plotting import core
+        from .vis import core
 
         # Generate the data
         data = self.message_histogram(bins=bins)
