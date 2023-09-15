@@ -40,6 +40,7 @@ class Trace:
         self.cct = create_cct(self.events)
 
         from .plotting.util import generate_palette
+        from .vis.util import generate_palette
 
         self.palette = generate_palette(self)
 
