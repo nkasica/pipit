@@ -627,33 +627,17 @@ class Trace:
         return imbalance_df
 
     def idle_time(self, idle_functions=["Idle"], mpi_events=False):
-        # calculate inclusive metrics
-        if "time.inc" not in self.events.columns:
-            self.calc_inc_metrics()
+        # dict for creating a new dataframe
+        idle_times = {"Process": [], "Idle Time": []}
 
-        if mpi_events:
-            idle_functions += ["MPI_Wait", "MPI_Waitall", "MPI_Recv"]
-
-        def calc_idle_time(events):
-            # assumes events is sorted by time
-
-            # Calculate idle time due to gaps in between events
-            # This is the total time minus exclusive time spent in functions
-            total_time = events["Timestamp (ns)"].max() - events["Timestamp (ns)"].min()
-
-            idle_time = total_time - events["time.exc"].sum()
-
-            # Calculate idle time due to idle_functions
-            idle_time += events[events["Name"].isin(idle_functions)]["time.inc"].sum()
-            return idle_time
-
-        return (
-            self.events.groupby(self.parallelism_levels, dropna=False, observed=False)
-            .apply(
-                calc_idle_time,
+        for process in set(self.events["Process"]):
+            idle_times["Process"].append(process)
+            idle_times["Idle Time"].append(
+                self._calculate_idle_time_for_process(
+                    process, idle_functions, mpi_events
+                )
             )
-            .rename("idle_time")
-        )
+        return pd.DataFrame(idle_times)
 
     def _calculate_idle_time_for_process(
         self, process, idle_functions=["Idle"], mpi_events=False
